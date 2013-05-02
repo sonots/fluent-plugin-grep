@@ -4,15 +4,6 @@ Fluentd plugin to grep messages.
 
 ## Configuration
 
-Assume inputs from another plugin are as belows:
-
-    syslog.host1: {"foo":"bar","message":"2013/01/13T07:02:11.124202 INFO GET /ping"}
-    syslog.host1: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
-    syslog.host1: {"foo":"bar","message":"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"}
-    syslog.host1: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
-
-An example of grep configuration:
-
     <match syslog.**>
       type grep
       input_key message
@@ -21,12 +12,39 @@ An example of grep configuration:
       add_tag_prefix grep
     </source>
 
-Then, output bocomes as belows:
+Assuming following inputs are coming:
 
-    grep.syslog.host1: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
-    grep.syslog.host1: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
+    foo.bar: {"foo":"bar","message":"2013/01/13T07:02:11.124202 INFO GET /ping"}
+    foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
+    foo.bar: {"foo":"bar","message":"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"}
+    foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
+
+then output bocomes as belows:
+
+    grep.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
+    grep.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
 
 ## Parameters
+
+- input_key
+
+    The target field key to grep out
+
+- regexp
+
+    The filtering regular expression
+
+- exclude
+
+    The excluding regular expression like grep -v
+
+- tag
+
+    The output tag name
+
+- add_tag_prefix
+
+    Add tag prefix for output message
 
 - replace_invalid_sequence
 
