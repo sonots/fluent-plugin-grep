@@ -26,7 +26,7 @@ Then, output bocomes as belows:
     grep.syslog.host1: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
     grep.syslog.host1: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
 
-## ChaangeLog
+## ChangeLog
 
 See [CHANGELOG.md](CHANGELOG.md) for details.
 
