@@ -6,6 +6,7 @@ class Fluent::GrepOutput < Fluent::Output
   config_param :exclude, :string, :default => nil
   config_param :tag, :string, :default => nil
   config_param :add_tag_prefix, :string, :default => 'grep'
+  config_param :replace_invalid_sequence, :bool, :default => false
 
   def configure(conf)
     super
@@ -20,11 +21,35 @@ class Fluent::GrepOutput < Fluent::Output
 
     es.each do |time,record|
       value = record[@input_key]
-      next if @regexp and !@regexp.match(value)
-      next if @exclude and @exclude.match(value)
+      next unless match(value)
       Fluent::Engine.emit(emit_tag, time, record)
     end
 
     chain.next
   end
+
+  private
+
+  def match(string)
+    begin
+      return false if @regexp and !@regexp.match(string)
+      return false if @exclude and @exclude.match(string)
+    rescue ArgumentError => e
+      unless e.message.index("invalid byte sequence in") == 0
+        raise
+      end
+      string = replace_invalid_byte(string)
+      return false if @regexp and !@regexp.match(string)
+      return false if @exclude and @exclude.match(string)
+    end
+    return true
+  end
+
+  def replace_invalid_byte(string)
+    replace_options = { invalid: :replace, undef: :replace, replace: '?' }
+    original_encoding = string.encoding
+    temporal_encoding = (original_encoding == Encoding::UTF_8 ? Encoding::UTF_16BE : Encoding::UTF_8)
+    string.encode(temporal_encoding, original_encoding, replace_options).encode(original_encoding)
+  end
+
 end
