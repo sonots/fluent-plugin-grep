@@ -26,6 +26,9 @@ class Fluent::GrepOutput < Fluent::Output
     end
 
     chain.next
+  rescue => e
+    $log.warn e.message
+    $log.warn e.backtrace.join(', ')
   end
 
   private
