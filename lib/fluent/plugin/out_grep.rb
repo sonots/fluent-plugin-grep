@@ -5,7 +5,7 @@ class Fluent::GrepOutput < Fluent::Output
   config_param :regexp, :string, :default => nil
   config_param :exclude, :string, :default => nil
   config_param :tag, :string, :default => nil
-  config_param :add_tag_prefix, :string, :default => 'grep'
+  config_param :add_tag_prefix, :string, :default => 'greped'
   config_param :replace_invalid_sequence, :bool, :default => false
 
   def configure(conf)

@@ -26,7 +26,7 @@ describe Fluent::GrepOutput do
         its(:regexp) { should be_nil }
         its(:exclude) { should be_nil }
         its(:tag) { should be_nil }
-        its(:add_tag_prefix) { should == 'grep' }
+        its(:add_tag_prefix) { should == 'greped' }
       end
     end
   end
@@ -49,10 +49,10 @@ describe Fluent::GrepOutput do
       let(:config) { CONFIG }
       before do
         Fluent::Engine.stub(:now).and_return(time)
-        Fluent::Engine.should_receive(:emit).with("grep.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
-        Fluent::Engine.should_receive(:emit).with("grep.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:13.232645 WARN POST /auth"})
-        Fluent::Engine.should_receive(:emit).with("grep.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"})
-        Fluent::Engine.should_receive(:emit).with("grep.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:43.632145 WARN POST /login"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:13.232645 WARN POST /auth"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:43.632145 WARN POST /login"})
       end
       it { emit }
     end
@@ -65,9 +65,9 @@ describe Fluent::GrepOutput do
       end
       before do
         Fluent::Engine.stub(:now).and_return(time)
-        Fluent::Engine.should_receive(:emit).with("grep.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:13.232645 WARN POST /auth"})
-        Fluent::Engine.should_receive(:emit).with("grep.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"})
-        Fluent::Engine.should_receive(:emit).with("grep.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:43.632145 WARN POST /login"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:13.232645 WARN POST /auth"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:43.632145 WARN POST /login"})
       end
       it { emit }
     end
@@ -80,9 +80,9 @@ describe Fluent::GrepOutput do
       end
       before do
         Fluent::Engine.stub(:now).and_return(time)
-        Fluent::Engine.should_receive(:emit).with("grep.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
-        Fluent::Engine.should_receive(:emit).with("grep.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:13.232645 WARN POST /auth"})
-        Fluent::Engine.should_receive(:emit).with("grep.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:43.632145 WARN POST /login"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:13.232645 WARN POST /auth"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:43.632145 WARN POST /login"})
       end
       it { emit }
     end

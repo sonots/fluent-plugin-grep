@@ -9,7 +9,7 @@ Fluentd plugin to grep messages.
       input_key message
       regexp WARN
       exclude favicon.ico
-      add_tag_prefix grep
+      add_tag_prefix greped
     </source>
 
 Assuming following inputs are coming:
@@ -19,10 +19,10 @@ Assuming following inputs are coming:
     foo.bar: {"foo":"bar","message":"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"}
     foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
 
-then output bocomes as belows:
+then output bocomes as belows (like, | grep WARN | grep -v favicon.ico):
 
-    grep.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
-    grep.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
+    greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
+    greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
 
 ## Parameters
 
