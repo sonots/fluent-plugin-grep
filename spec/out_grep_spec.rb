@@ -134,7 +134,40 @@ describe Fluent::GrepOutput do
     end
   end
 
+  describe 'grep non-string jsonable values' do
+    let(:config) { CONFIG + %[regexp 0] }
+    let(:message) { 0 }
+    let(:time) { Time.now.to_i }
+    let(:emit) { driver.run { driver.emit({'foo'=>'bar', 'message' => message}, time) } }
+    before do
+      Fluent::Engine.stub(:now).and_return(time)
+      Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>message})
+    end
+
+    context "array" do
+      let(:message) { ["0"] }
+      it { emit }
+    end
+
+    context "hash" do
+      let(:message) { ["0"=>"0"] }
+      it { emit }
+    end
+
+    context "integer" do
+      let(:message) { 0 }
+      it { emit }
+    end
+
+    context "float" do
+      let(:message) { 0.1 }
+      it { emit }
+    end
+
+    context "boolean" do
+      let(:config) { CONFIG + %[regexp true] }
+      let(:message) { true }
+      it { emit }
+    end
+  end
 end
-
-
-

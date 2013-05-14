@@ -21,7 +21,7 @@ class Fluent::GrepOutput < Fluent::Output
 
     es.each do |time,record|
       value = record[@input_key]
-      next unless match(value)
+      next unless match(value.to_s)
       Fluent::Engine.emit(emit_tag, time, record)
     end
 

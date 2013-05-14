@@ -1,4 +1,8 @@
-## 0.0.3 (XXXX/XX/XX)
+## 0.0.3 (2013/05/14)
+
+Features:
+
+- Support to grep non-string jsonable values as a string
 
 Changes:
 
