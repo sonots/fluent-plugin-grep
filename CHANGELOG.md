@@ -1,3 +1,9 @@
+## 0.0.3 (XXXX/XX/XX)
+
+Changes:
+
+- Default tag prefix from `grep` to `greped`. 
+
 ## 0.0.2 (2013/05/02)
 
 Features:
