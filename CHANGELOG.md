@@ -2,7 +2,7 @@
 
 Features:
 
-- Support to grep non-string jsonable values as a string
+- Support to grep non-string jsonable values (such as integer, array) by #to_s. 
 
 Changes:
 
