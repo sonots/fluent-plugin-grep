@@ -7,10 +7,6 @@ Bundler.require(:default, :test)
 require 'coveralls'
 Coveralls.wear!
 
-require 'fluent/test'
 require 'rspec'
 require 'pry'
-
-$TESTING=true
-$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
-require 'fluent/plugin/out_grep'
+require 'fluentd/plugin_spec_helper'

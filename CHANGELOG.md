@@ -1,3 +1,9 @@
+## 0.0.4 (2013/08/10)
+
+Changes:
+
+- Porting to Fluentd v11
+
 ## 0.0.3 (2013/05/14)
 
 Features:
