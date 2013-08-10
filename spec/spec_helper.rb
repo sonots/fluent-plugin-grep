@@ -10,3 +10,4 @@ Coveralls.wear!
 require 'rspec'
 require 'pry'
 require 'fluentd/plugin_spec_helper'
+require 'fluentd/plugin/filter_grep'

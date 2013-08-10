@@ -1,7 +1,5 @@
 # encoding: UTF-8
 require_relative 'spec_helper'
-require 'fluentd/plugin/filter_grep'
-
 include Fluentd::PluginSpecHelper
 
 module Fluentd::PluginSpecHelper::GrepFilter
