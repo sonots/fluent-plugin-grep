@@ -4,7 +4,7 @@ Fluentd plugin to grep messages.
 
 ## Configuration
 
-    <match syslog.**>
+    <match foo.bar.**>
       type grep
       input_key message
       regexp WARN
