@@ -1,3 +1,9 @@
+## 0.1.0 (2013/11/02)
+
+Changes:
+
+- Use String#scrub
+
 ## 0.0.3 (2013/05/14)
 
 Features:
