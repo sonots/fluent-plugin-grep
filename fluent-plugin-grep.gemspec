@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/sonots/fluent-plugin-grep"
   s.summary     = "fluentd plugin to grep messages"
   s.description = s.summary
+  s.licenses    = ["MIT"]
 
   s.rubyforge_project = "fluent-plugin-grep"
 
