@@ -130,7 +130,7 @@ describe Fluent::GrepOutput do
       before do
         Fluent::Engine.stub(:now).and_return(time)
       end
-      it { expect { emit }.not_to raise_error }
+      it { expect { emit }.not_to raise_error(ArgumentError) }
     end
   end
 

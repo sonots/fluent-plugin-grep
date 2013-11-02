@@ -1,11 +1,6 @@
 class Fluent::GrepOutput < Fluent::Output
   Fluent::Plugin.register_output('grep', self)
 
-  def initialize
-    super
-    require 'string/scrub'
-  end
-
   config_param :input_key, :string
   config_param :regexp, :string, :default => nil
   config_param :exclude, :string, :default => nil
@@ -46,11 +41,18 @@ class Fluent::GrepOutput < Fluent::Output
       unless e.message.index("invalid byte sequence in") == 0
         raise
       end
-      string = string.scrub('?')
+      string = replace_invalid_byte(string)
       return false if @regexp and !@regexp.match(string)
       return false if @exclude and @exclude.match(string)
     end
     return true
+  end
+
+  def replace_invalid_byte(string)
+    replace_options = { invalid: :replace, undef: :replace, replace: '?' }
+    original_encoding = string.encoding
+    temporal_encoding = (original_encoding == Encoding::UTF_8 ? Encoding::UTF_16BE : Encoding::UTF_8)
+    string.encode(temporal_encoding, original_encoding, replace_options).encode(original_encoding)
   end
 
 end
