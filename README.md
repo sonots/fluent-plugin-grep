@@ -46,6 +46,10 @@ then output bocomes as belows (like, | grep WARN | grep -v favicon.ico):
 
     Add tag prefix for output message
 
+- remove_tag_prefix
+
+    Remove tag prefix for output message
+
 - replace_invalid_sequence
 
     Replace invalid byte sequence in UTF-8 with '?' character if `true`

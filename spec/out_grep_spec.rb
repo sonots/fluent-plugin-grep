@@ -115,6 +115,21 @@ describe Fluent::GrepOutput do
       it { emit }
     end
 
+    context 'remove_tag_prefix' do
+      let(:config) do
+        CONFIG + %[
+          regexp ping
+          add_tag_prefix foo
+          remove_tag_prefix syslog
+        ]
+      end
+      before do
+        Fluent::Engine.stub(:now).and_return(time)
+        Fluent::Engine.should_receive(:emit).with("foo.host1", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+      end
+      it { emit }
+    end
+
     context 'replace_invalid_sequence' do
       let(:config) do
         CONFIG + %[
@@ -130,7 +145,7 @@ describe Fluent::GrepOutput do
       before do
         Fluent::Engine.stub(:now).and_return(time)
       end
-      it { expect { emit }.not_to raise_error(ArgumentError) }
+      it { expect { emit }.not_to raise_error }
     end
   end
 
