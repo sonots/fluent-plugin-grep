@@ -5,7 +5,7 @@ class Fluent::GrepOutput < Fluent::Output
   config_param :regexp, :string, :default => nil
   config_param :exclude, :string, :default => nil
   config_param :tag, :string, :default => nil
-  config_param :add_tag_prefix, :string, :default => 'greped'
+  config_param :add_tag_prefix, :string, :default => nil
   config_param :remove_tag_prefix, :string, :default => nil
   config_param :replace_invalid_sequence, :bool, :default => false
 
@@ -15,9 +15,13 @@ class Fluent::GrepOutput < Fluent::Output
     @input_key = @input_key.to_s
     @regexp = Regexp.compile(@regexp) if @regexp
     @exclude = Regexp.compile(@exclude) if @exclude
-    @tag_prefix = "#{@add_tag_prefix}."
-    @tag_prefix_match = "#{@remove_tag_prefix}." if @remove_tag_prefix
 
+    if @tag.nil? and @add_tag_prefix.nil? and @remove_tag_prefix.nil?
+      @add_tag_prefix = 'greped' # not ConfigError to support lower version compatibility
+    end
+
+    @tag_prefix = "#{@add_tag_prefix}." if @add_tag_prefix
+    @tag_prefix_match = "#{@remove_tag_prefix}." if @remove_tag_prefix
     @tag_proc =
       if @tag
         Proc.new {|tag| @tag }

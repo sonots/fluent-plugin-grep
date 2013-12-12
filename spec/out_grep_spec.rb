@@ -119,13 +119,12 @@ describe Fluent::GrepOutput do
       let(:config) do
         CONFIG + %[
           regexp ping
-          add_tag_prefix foo
           remove_tag_prefix syslog
         ]
       end
       before do
         Fluent::Engine.stub(:now).and_return(time)
-        Fluent::Engine.should_receive(:emit).with("foo.host1", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+        Fluent::Engine.should_receive(:emit).with("host1", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
       end
       it { emit }
     end
