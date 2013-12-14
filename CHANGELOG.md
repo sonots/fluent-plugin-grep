@@ -1,3 +1,9 @@
+## 0.3.0 (2013/12/15)
+
+Features:
+
+- Add `regexpN` and `excludeN` option. `input_key`, `regexp`, and `exclude` options are now obsolete.
+
 ## 0.2.1 (2013/12/12)
 
 Features:
