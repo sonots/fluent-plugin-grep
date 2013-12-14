@@ -25,7 +25,9 @@ end
 # BEFORE TAG_PROC
 #              user     system      total        real
 #          2.560000   0.030000   2.590000 (  3.169847)
-# AFTER  TAG_PROC
+# AFTER  TAG_PROC (0.2.1)
 #              user     system      total        real
 #          2.480000   0.040000   2.520000 (  3.085798)
-
+# AFTER  regexps, exludes (0.3.0) 
+#              user     system      total        real
+#          2.700000   0.050000   2.750000 (  3.340524)

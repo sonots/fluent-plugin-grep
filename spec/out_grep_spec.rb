@@ -11,10 +11,6 @@ describe Fluent::GrepOutput do
 
   describe 'test configure' do
     describe 'bad configuration' do
-      context "lack of requirements" do
-        let(:config) { '' }
-        it { expect { driver }.to raise_error(Fluent::ConfigError) }
-      end
     end
 
     describe 'good configuration' do
@@ -72,10 +68,40 @@ describe Fluent::GrepOutput do
       it { emit }
     end
 
+    context 'regexpN' do
+      let(:config) do
+        CONFIG + %[
+          regexp1 message WARN
+        ]
+      end
+      before do
+        Fluent::Engine.stub(:now).and_return(time)
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:13.232645 WARN POST /auth"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:43.632145 WARN POST /login"})
+      end
+      it { emit }
+    end
+
     context 'exclude' do
       let(:config) do
         CONFIG + %[
           exclude favicon
+        ]
+      end
+      before do
+        Fluent::Engine.stub(:now).and_return(time)
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:13.232645 WARN POST /auth"})
+        Fluent::Engine.should_receive(:emit).with("greped.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:43.632145 WARN POST /login"})
+      end
+      it { emit }
+    end
+
+    context 'excludeN' do
+      let(:config) do
+        CONFIG + %[
+          exclude1 message favicon
         ]
       end
       before do

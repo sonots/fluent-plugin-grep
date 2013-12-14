@@ -1,4 +1,4 @@
-# fluent-plugin-grep [![Build Status](https://secure.travis-ci.org/sonots/fluent-plugin-grep.png?branch=master)](http://travis-ci.org/sonots/fluent-plugin-grep) [![Dependency Status](https://gemnasium.com/sonots/fluent-plugin-grep.png)](https://gemnasium.com/sonots/fluent-plugin-grep) [![Coverage Status](https://coveralls.io/repos/sonots/fluent-plugin-grep/badge.png?branch=master)](https://coveralls.io/r/sonots/fluent-plugin-grep)
+# fluent-plugin-grep [![Build Status](https://secure.travis-ci.org/sonots/fluent-plugin-grep.png?branch=master)](http://travis-ci.org/sonots/fluent-plugin-grep) [![Coverage Status](https://coveralls.io/repos/sonots/fluent-plugin-grep/badge.png?branch=master)](https://coveralls.io/r/sonots/fluent-plugin-grep)
 
 Fluentd plugin to grep messages.
 
@@ -6,9 +6,8 @@ Fluentd plugin to grep messages.
 
     <match foo.bar.**>
       type grep
-      input_key message
-      regexp WARN
-      exclude favicon.ico
+      regexp1 message WARN
+      exclude1 message favicon
       add_tag_prefix greped
     </source>
 
@@ -19,24 +18,20 @@ Assuming following inputs are coming:
     foo.bar: {"foo":"bar","message":"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"}
     foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
 
-then output bocomes as belows (like, | grep WARN | grep -v favicon.ico):
+then output bocomes as belows (like, | grep WARN | grep -v favicon):
 
     greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
     greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
 
 ## Parameters
 
-- input_key
+- regexp[1-20] *field\_key* *regexp*
 
-    The target field key to grep out
+    The target field key and the filtering regular expression to grep out. 
 
-- regexp
+- exclude[1-20] *field_key* *regexp*
 
-    The filtering regular expression
-
-- exclude
-
-    The excluding regular expression like grep -v
+    The target field key and the excluding regular expression like grep -v
 
 - tag
 
@@ -53,6 +48,18 @@ then output bocomes as belows (like, | grep WARN | grep -v favicon.ico):
 - replace_invalid_sequence
 
     Replace invalid byte sequence in UTF-8 with '?' character if `true`
+
+- input\_key *field\_key* (obsolete)
+
+    The target field key to grep out. Use with regexp or exclude. 
+
+- regexp *regexp* (obsolete)
+
+    The filtering regular expression
+
+- exclude *regexp* (obsolete)
+
+    The excluding regular expression like grep -v
 
 ## ChangeLog
 

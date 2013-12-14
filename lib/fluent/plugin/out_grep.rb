@@ -1,20 +1,38 @@
 class Fluent::GrepOutput < Fluent::Output
   Fluent::Plugin.register_output('grep', self)
 
-  config_param :input_key, :string
-  config_param :regexp, :string, :default => nil
-  config_param :exclude, :string, :default => nil
+  REGEXP_MAX_NUM = 20
+
+  config_param :input_key, :string, :default => nil # obsolete
+  config_param :regexp, :string, :default => nil # obsolete
+  config_param :exclude, :string, :default => nil # obsolete
   config_param :tag, :string, :default => nil
   config_param :add_tag_prefix, :string, :default => nil
   config_param :remove_tag_prefix, :string, :default => nil
   config_param :replace_invalid_sequence, :bool, :default => false
+  (1..REGEXP_MAX_NUM).each {|i| config_param :"regexp#{i}",  :string, :default => nil }
+  (1..REGEXP_MAX_NUM).each {|i| config_param :"exclude#{i}", :string, :default => nil }
 
   def configure(conf)
     super
 
-    @input_key = @input_key.to_s
-    @regexp = Regexp.compile(@regexp) if @regexp
-    @exclude = Regexp.compile(@exclude) if @exclude
+    @regexps = {}
+    @regexps[@input_key] = Regexp.compile(@regexp) if @input_key and @regexp
+    (1..REGEXP_MAX_NUM).each do |i|
+      next unless conf["regexp#{i}"]
+      key, regexp = conf["regexp#{i}"].split(/ +/, 2)
+      raise Fluent::ConfigError, "regexp#{i} does not contain 2 parameters" unless regexp
+      @regexps[key] = Regexp.compile(regexp)
+    end
+
+    @excludes = {}
+    @excludes[@input_key] = Regexp.compile(@exclude) if @input_key and @exclude
+    (1..REGEXP_MAX_NUM).each do |i|
+      next unless conf["exclude#{i}"]
+      key, exclude = conf["exclude#{i}"].split(/ +/, 2)
+      raise Fluent::ConfigError, "exclude#{i} does not contain 2 parameters" unless exclude
+      @excludes[key] = Regexp.compile(exclude)
+    end
 
     if @tag.nil? and @add_tag_prefix.nil? and @remove_tag_prefix.nil?
       @add_tag_prefix = 'greped' # not ConfigError to support lower version compatibility
@@ -40,9 +58,15 @@ class Fluent::GrepOutput < Fluent::Output
     emit_tag = @tag_proc.call(tag)
 
     es.each do |time,record|
-      value = record[@input_key]
-      next unless match(value.to_s)
-      Fluent::Engine.emit(emit_tag, time, record)
+      catch(:break_loop) do
+        @regexps.each do |key, regexp|
+          throw :break_loop unless match(regexp, record[key].to_s)
+        end
+        @excludes.each do |key, exclude|
+          throw :break_loop if match(exclude, record[key].to_s)
+        end
+        Fluent::Engine.emit(emit_tag, time, record)
+      end
     end
 
     chain.next
@@ -57,10 +81,9 @@ class Fluent::GrepOutput < Fluent::Output
     string.index(substring) == 0 ? string[substring.size..-1] : string
   end
 
-  def match(string)
+  def match(regexp, string)
     begin
-      return false if @regexp and !@regexp.match(string)
-      return false if @exclude and @exclude.match(string)
+      return regexp.match(string)
     rescue ArgumentError => e
       raise e unless e.message.index("invalid byte sequence in") == 0
       string = replace_invalid_byte(string)
