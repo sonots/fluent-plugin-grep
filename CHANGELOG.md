@@ -1,3 +1,9 @@
+## 0.3.1 (2013/12/16)
+
+Changes:
+
+- Make it possible that regexp to contain a heading space on `regexpN` and `excludeN` option.
+
 ## 0.3.0 (2013/12/15)
 
 Features:
