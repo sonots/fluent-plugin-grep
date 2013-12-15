@@ -40,6 +40,16 @@ describe Fluent::GrepOutput do
         its(:tag) { should be_nil }
         its(:add_tag_prefix) { should == 'greped' }
       end
+
+      context "regexpN can contain a space" do
+        let(:config) { CONFIG + %[regexp1 message  foo] }
+        it { subject.regexps['message'].should == Regexp.compile(/ foo/) }
+      end
+
+      context "excludeN can contain a space" do
+        let(:config) { CONFIG + %[exclude1 message  foo] }
+        it { subject.excludes['message'].should == Regexp.compile(/ foo/) }
+      end
     end
   end
 

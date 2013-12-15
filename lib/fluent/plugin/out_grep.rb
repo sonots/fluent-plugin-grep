@@ -13,6 +13,10 @@ class Fluent::GrepOutput < Fluent::Output
   (1..REGEXP_MAX_NUM).each {|i| config_param :"regexp#{i}",  :string, :default => nil }
   (1..REGEXP_MAX_NUM).each {|i| config_param :"exclude#{i}", :string, :default => nil }
 
+  # for test
+  attr_reader :regexps
+  attr_reader :excludes
+
   def configure(conf)
     super
 
@@ -20,7 +24,7 @@ class Fluent::GrepOutput < Fluent::Output
     @regexps[@input_key] = Regexp.compile(@regexp) if @input_key and @regexp
     (1..REGEXP_MAX_NUM).each do |i|
       next unless conf["regexp#{i}"]
-      key, regexp = conf["regexp#{i}"].split(/ +/, 2)
+      key, regexp = conf["regexp#{i}"].split(/ /, 2)
       raise Fluent::ConfigError, "regexp#{i} does not contain 2 parameters" unless regexp
       raise Fluent::ConfigError, "regexp#{i} contains a duplicated key, #{key}" if @regexps[key]
       @regexps[key] = Regexp.compile(regexp)
@@ -30,7 +34,7 @@ class Fluent::GrepOutput < Fluent::Output
     @excludes[@input_key] = Regexp.compile(@exclude) if @input_key and @exclude
     (1..REGEXP_MAX_NUM).each do |i|
       next unless conf["exclude#{i}"]
-      key, exclude = conf["exclude#{i}"].split(/ +/, 2)
+      key, exclude = conf["exclude#{i}"].split(/ /, 2)
       raise Fluent::ConfigError, "exclude#{i} does not contain 2 parameters" unless exclude
       raise Fluent::ConfigError, "exclude#{i} contains a duplicated key, #{key}" if @excludes[key]
       @excludes[key] = Regexp.compile(exclude)
