@@ -11,6 +11,22 @@ describe Fluent::GrepOutput do
 
   describe 'test configure' do
     describe 'bad configuration' do
+      context 'regexp contains a duplicated key' do
+        let(:config) { CONFIG + %[
+          input_key message
+          regexp foo
+          regexp1 message foo
+        ]}
+        it { expect { driver }.to raise_error(Fluent::ConfigError) }
+      end
+      context 'exclude contains a duplicated key' do
+        let(:config) { CONFIG + %[
+          input_key message
+          exclude foo
+          exclude1 message foo
+        ]}
+        it { expect { driver }.to raise_error(Fluent::ConfigError) }
+      end
     end
 
     describe 'good configuration' do

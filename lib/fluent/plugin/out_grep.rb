@@ -22,6 +22,7 @@ class Fluent::GrepOutput < Fluent::Output
       next unless conf["regexp#{i}"]
       key, regexp = conf["regexp#{i}"].split(/ +/, 2)
       raise Fluent::ConfigError, "regexp#{i} does not contain 2 parameters" unless regexp
+      raise Fluent::ConfigError, "regexp#{i} contains a duplicated key, #{key}" if @regexps[key]
       @regexps[key] = Regexp.compile(regexp)
     end
 
@@ -31,6 +32,7 @@ class Fluent::GrepOutput < Fluent::Output
       next unless conf["exclude#{i}"]
       key, exclude = conf["exclude#{i}"].split(/ +/, 2)
       raise Fluent::ConfigError, "exclude#{i} does not contain 2 parameters" unless exclude
+      raise Fluent::ConfigError, "exclude#{i} contains a duplicated key, #{key}" if @excludes[key]
       @excludes[key] = Regexp.compile(exclude)
     end
 
