@@ -2,7 +2,29 @@
 
 Fluentd plugin to grep messages.
 
-## Configuration
+## Configuration (Classic Style)
+
+    <match foo.bar.**>
+      type grep
+      input_key message
+      regexp WARN
+      exclude favicon
+      add_tag_prefix greped
+    </source>
+
+Assuming following inputs are coming:
+
+    foo.bar: {"foo":"bar","message":"2013/01/13T07:02:11.124202 INFO GET /ping"}
+    foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
+    foo.bar: {"foo":"bar","message":"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"}
+    foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
+
+then output bocomes as belows (like, | grep WARN | grep -v favicon):
+
+    greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
+    greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
+
+## Configuration (New Style)
 
     <match foo.bar.**>
       type grep
@@ -24,6 +46,18 @@ then output bocomes as belows (like, | grep WARN | grep -v favicon):
     greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
 
 ## Parameters
+
+- input\_key *field\_key*
+
+    The target field key to grep out. Use with regexp or exclude. 
+
+- regexp *regexp*
+
+    The filtering regular expression
+
+- exclude *regexp*
+
+    The excluding regular expression like grep -v
 
 - regexp[1-20] *field\_key* *regexp*
 
@@ -48,18 +82,6 @@ then output bocomes as belows (like, | grep WARN | grep -v favicon):
 - replace_invalid_sequence
 
     Replace invalid byte sequence in UTF-8 with '?' character if `true`
-
-- input\_key *field\_key* (obsolete)
-
-    The target field key to grep out. Use with regexp or exclude. 
-
-- regexp *regexp* (obsolete)
-
-    The filtering regular expression
-
-- exclude *regexp* (obsolete)
-
-    The excluding regular expression like grep -v
 
 ## ChangeLog
 
