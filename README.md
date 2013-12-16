@@ -24,11 +24,14 @@ then output bocomes as belows (like, | grep WARN | grep -v favicon):
     greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
     greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
 
-## Configuration (New Style)
+## Configuration
+
+`regexpN` and `excludeN` options allow to specify grep conditions for multiple fields. 
 
     <match foo.bar.**>
       type grep
       regexp1 message WARN
+      regexp2 foo ^awesome$
       exclude1 message favicon
       add_tag_prefix greped
     </source>
@@ -36,14 +39,13 @@ then output bocomes as belows (like, | grep WARN | grep -v favicon):
 Assuming following inputs are coming:
 
     foo.bar: {"foo":"bar","message":"2013/01/13T07:02:11.124202 INFO GET /ping"}
-    foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
+    foo.bar: {"foo":"awesome","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
     foo.bar: {"foo":"bar","message":"2013/01/13T07:02:21.542145 WARN GET /favicon.ico"}
     foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
 
-then output bocomes as belows (like, | grep WARN | grep -v favicon):
+then output bocomes as belows:
 
-    greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
-    greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
+    greped.foo.bar: {"foo":"awesome","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
 
 ## Parameters
 
