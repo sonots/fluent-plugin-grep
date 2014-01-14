@@ -2,7 +2,9 @@
 
 Fluentd plugin to grep messages.
 
-## Configuration (Classic Style)
+## Configuration
+
+### Example 1:
 
     <match foo.bar.**>
       type grep
@@ -24,7 +26,7 @@ then output bocomes as belows (like, | grep WARN | grep -v favicon):
     greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:13.232645 WARN POST /auth"}
     greped.foo.bar: {"foo":"bar","message":"2013/01/13T07:02:43.632145 WARN POST /login"}
 
-## Configuration
+### Example 2:
 
 `regexpN` and `excludeN` options allow to specify grep conditions for multiple fields. 
 
