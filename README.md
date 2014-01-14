@@ -28,7 +28,7 @@ then output bocomes as belows (like, | grep WARN | grep -v favicon):
 
 ### Example 2:
 
-`regexpN` and `excludeN` options allow to specify grep conditions for multiple fields. 
+Now, `regexpN` and `excludeN` options are available to specify grep conditions for *multiple* fields. 
 
     <match foo.bar.**>
       type grep
