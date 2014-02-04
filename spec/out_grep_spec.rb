@@ -236,4 +236,36 @@ describe Fluent::GrepOutput do
       it { emit }
     end
   end
+
+  describe 'test log' do
+    let(:log) { driver.instance.log }
+
+    def capture_log(log)
+      tmp = log.instance_variable_get(:@out)
+      out = StringIO.new
+      log.instance_variable_set(:@out, out)
+      yield log
+      return out.string
+    ensure
+      log.instance_variable_set(:@out, tmp)
+    end
+
+    if Fluent::VERSION >= "0.10.43"
+      context "log_level info" do
+        let(:config) { CONFIG + %[log_level info] }
+
+        it "should not contain debug level" do
+          capture_log(log) {|log| log.debug "foobar" }.should == ""
+        end
+      end
+    end
+
+    context "log" do
+      let(:config) { CONFIG }
+      it "should work" do
+        capture_log(log) {|log| log.info "foobar" }.should include("foobar")
+      end
+    end
+  end
+
 end

@@ -17,6 +17,11 @@ class Fluent::GrepOutput < Fluent::Output
   attr_reader :regexps
   attr_reader :excludes
 
+  # To support log_level option implemented by Fluentd v0.10.43
+  unless method_defined?(:log)
+    define_method("log") { $log }
+  end
+
   def configure(conf)
     super
 
@@ -77,8 +82,8 @@ class Fluent::GrepOutput < Fluent::Output
 
     chain.next
   rescue => e
-    $log.warn e.message
-    $log.warn e.backtrace.join(', ')
+    log.warn e.message
+    log.warn e.backtrace.join(', ')
   end
 
   private
