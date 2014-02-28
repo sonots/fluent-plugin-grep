@@ -12,7 +12,7 @@ Fluentd plugin to grep messages.
       regexp WARN
       exclude favicon
       add_tag_prefix greped
-    </source>
+    </match>
 
 Assuming following inputs are coming:
 
@@ -36,7 +36,7 @@ Now, `regexpN` and `excludeN` options are available to specify grep conditions f
       regexp2 foo ^awesome$
       exclude1 message favicon
       add_tag_prefix greped
-    </source>
+    </match>
 
 Assuming following inputs are coming:
 
