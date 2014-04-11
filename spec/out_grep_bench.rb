@@ -31,3 +31,6 @@ end
 # AFTER  regexps, exludes (0.3.0) 
 #              user     system      total        real
 #          2.700000   0.050000   2.750000 (  3.340524)
+# AFTER  add_tag_suffix, remove_tag_suffix (0.3.3)
+#              user     system      total        real
+#          2.470000   0.020000   2.490000 (  3.012241)

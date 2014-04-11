@@ -1,3 +1,10 @@
+## 0.3.3 (2014/04/12)
+
+Enhancements:
+
+* Add `add_tag_suffix` and `remove_tag_suffix` options
+* Allow . in tag options to support compatibility with HandleTagNameMixin
+
 ## 0.3.2 (2014/02/04)
 
 Enhancement:
