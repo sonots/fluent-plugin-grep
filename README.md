@@ -83,6 +83,14 @@ then output bocomes as belows:
 
     Remove tag prefix for output message
 
+- add_tag_suffix
+
+    Add tag suffix for output message
+
+- remove_tag_suffix
+
+    Remove tag suffix for output message
+
 - replace_invalid_sequence
 
     Replace invalid byte sequence in UTF-8 with '?' character if `true`
