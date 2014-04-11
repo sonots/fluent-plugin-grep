@@ -160,6 +160,7 @@ describe Fluent::GrepOutput do
           add_tag_prefix foo
         ]
       end
+      let(:tag) { 'syslog.host1' }
       before do
         Fluent::Engine.stub(:now).and_return(time)
         Fluent::Engine.should_receive(:emit).with("foo.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
@@ -174,9 +175,118 @@ describe Fluent::GrepOutput do
           remove_tag_prefix syslog
         ]
       end
+      let(:tag) { 'syslog.host1' }
       before do
         Fluent::Engine.stub(:now).and_return(time)
         Fluent::Engine.should_receive(:emit).with("host1", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+      end
+      it { emit }
+    end
+
+    context 'add_tag_suffix' do
+      let(:config) do
+        CONFIG + %[
+          regexp ping
+          add_tag_suffix foo
+        ]
+      end
+      let(:tag) { 'syslog.host1' }
+      before do
+        Fluent::Engine.stub(:now).and_return(time)
+        Fluent::Engine.should_receive(:emit).with("#{tag}.foo", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+      end
+      it { emit }
+    end
+
+    context 'remove_tag_suffix' do
+      let(:config) do
+        CONFIG + %[
+          regexp ping
+          remove_tag_suffix host1
+        ]
+      end
+      let(:tag) { 'syslog.host1' }
+      before do
+        Fluent::Engine.stub(:now).and_return(time)
+        Fluent::Engine.should_receive(:emit).with("syslog", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+      end
+      it { emit }
+    end
+
+    context 'all tag options' do
+      let(:config) do
+        CONFIG + %[
+          regexp ping
+          add_tag_prefix foo
+          remove_tag_prefix syslog
+          add_tag_suffix foo
+          remove_tag_suffix host1
+        ]
+      end
+      let(:tag) { 'syslog.foo.host1' }
+      before do
+        Fluent::Engine.stub(:now).and_return(time)
+        Fluent::Engine.should_receive(:emit).with("foo.foo.foo", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+      end
+      it { emit }
+    end
+
+    context 'add_tag_prefix.' do
+      let(:config) do
+        CONFIG + %[
+          regexp ping
+          add_tag_prefix foo.
+        ]
+      end
+      let(:tag) { 'syslog.host1' }
+      before do
+        Fluent::Engine.stub(:now).and_return(time)
+        Fluent::Engine.should_receive(:emit).with("foo.#{tag}", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+      end
+      it { emit }
+    end
+
+    context 'remove_tag_prefix.' do
+      let(:config) do
+        CONFIG + %[
+          regexp ping
+          remove_tag_prefix syslog.
+        ]
+      end
+      let(:tag) { 'syslog.host1' }
+      before do
+        Fluent::Engine.stub(:now).and_return(time)
+        Fluent::Engine.should_receive(:emit).with("host1", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+      end
+      it { emit }
+    end
+
+    context '.add_tag_suffix' do
+      let(:config) do
+        CONFIG + %[
+          regexp ping
+          add_tag_suffix .foo
+        ]
+      end
+      let(:tag) { 'syslog.host1' }
+      before do
+        Fluent::Engine.stub(:now).and_return(time)
+        Fluent::Engine.should_receive(:emit).with("#{tag}.foo", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
+      end
+      it { emit }
+    end
+
+    context '.remove_tag_suffix' do
+      let(:config) do
+        CONFIG + %[
+          regexp ping
+          remove_tag_suffix .host1
+        ]
+      end
+      let(:tag) { 'syslog.host1' }
+      before do
+        Fluent::Engine.stub(:now).and_return(time)
+        Fluent::Engine.should_receive(:emit).with("syslog", time, {'foo'=>'bar', 'message'=>"2013/01/13T07:02:11.124202 INFO GET /ping"})
       end
       it { emit }
     end
