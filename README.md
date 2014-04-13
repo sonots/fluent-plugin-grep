@@ -1,4 +1,7 @@
-# fluent-plugin-grep [![Build Status](https://secure.travis-ci.org/sonots/fluent-plugin-grep.png?branch=master)](http://travis-ci.org/sonots/fluent-plugin-grep) [![Coverage Status](https://coveralls.io/repos/sonots/fluent-plugin-grep/badge.png?branch=master)](https://coveralls.io/r/sonots/fluent-plugin-grep)
+# fluent-plugin-grep
+
+[![Build Status](https://secure.travis-ci.org/sonots/fluent-plugin-grep.png?branch=master)](http://travis-ci.org/sonots/fluent-plugin-grep)
+[![Coverage Status](https://coveralls.io/repos/sonots/fluent-plugin-grep/badge.png?branch=master)](https://coveralls.io/r/sonots/fluent-plugin-grep?branch=master)
 
 Fluentd plugin to grep messages.
 
