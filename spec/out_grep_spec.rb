@@ -351,13 +351,12 @@ describe Fluent::GrepOutput do
     let(:log) { driver.instance.log }
 
     def capture_log(log)
-      tmp = log.instance_variable_get(:@out)
-      out = StringIO.new
-      log.instance_variable_set(:@out, out)
+      tmp = log.out
+      log.out = StringIO.new
       yield log
-      return out.string
+      return log.out.string
     ensure
-      log.instance_variable_set(:@out, tmp)
+      log.out = tmp
     end
 
     if Fluent::VERSION >= "0.10.43"
