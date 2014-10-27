@@ -70,8 +70,7 @@ class Fluent::GrepOutput < Fluent::Output
 
     chain.next
   rescue => e
-    log.warn e.message
-    log.warn e.backtrace.join(', ')
+    log.warn "out_grep: #{e.class} #{e.message} #{e.backtrace.first}"
   end
 
   private
