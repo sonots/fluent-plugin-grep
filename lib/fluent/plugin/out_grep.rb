@@ -11,7 +11,7 @@ class Fluent::GrepOutput < Fluent::Output
   config_param :remove_tag_prefix, :string, :default => nil
   config_param :add_tag_suffix, :string, :default => nil
   config_param :remove_tag_suffix, :string, :default => nil
-  config_param :replace_invalid_sequence, :bool, :default => false
+  config_param :replace_invalid_sequence, :bool, :default => true
   (1..REGEXP_MAX_NUM).each {|i| config_param :"regexp#{i}",  :string, :default => nil }
   (1..REGEXP_MAX_NUM).each {|i| config_param :"exclude#{i}", :string, :default => nil }
 
@@ -100,7 +100,9 @@ class Fluent::GrepOutput < Fluent::Output
     begin
       return regexp.match(string)
     rescue ArgumentError => e
+      raise e unless @replace_invalid_sequence
       raise e unless e.message.index("invalid byte sequence in") == 0
+      log.info "out_grep: invalid byte sequence is replaced in `#{string}`"
       string = replace_invalid_byte(string)
       retry
     end

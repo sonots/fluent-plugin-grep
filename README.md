@@ -96,7 +96,7 @@ then output bocomes as belows:
 
 - replace_invalid_sequence
 
-    Replace invalid byte sequence in UTF-8 with '?' character if `true`
+    Replace invalid byte sequence in UTF-8 with '?' character if `true`. Default: true
 
 ## ChangeLog
 
