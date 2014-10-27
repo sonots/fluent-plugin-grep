@@ -1,3 +1,13 @@
+## X.X.X
+
+Fixes:
+
+* Fix `replace_invalid_sequence` was always effective
+
+Enhancements:
+
+* Some log enhancements
+
 ## 0.3.3 (2014/04/12)
 
 Enhancements:
