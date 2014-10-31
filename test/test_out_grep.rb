@@ -2,6 +2,8 @@ require_relative 'helper'
 require 'fluent/test'
 require 'fluent/plugin/out_grep'
 
+Fluent::Test.setup
+
 class GrepOutputTest < Test::Unit::TestCase
   setup do
     @tag = 'syslog.host1'
