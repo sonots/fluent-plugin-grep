@@ -16,8 +16,10 @@ class GrepOutputTest < Test::Unit::TestCase
 
   def emit(config, msgs = [''])
     d = create_driver(config)
-    msgs.each do |msg|
-      d.run { d.emit({'foo' => 'bar', 'message' => msg}, @time) }
+    d.run do
+      msgs.each do |msg|
+        d.emit({'foo' => 'bar', 'message' => msg}, @time)
+      end
     end
 
     @instance = d.instance
