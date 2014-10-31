@@ -24,6 +24,11 @@ class Fluent::GrepOutput < Fluent::Output
     define_method("log") { $log }
   end
 
+  def initialize
+    require 'string/scrub' if RUBY_VERSION.to_f < 2.1
+    super
+  end
+
   def configure(conf)
     super
 
@@ -103,17 +108,9 @@ class Fluent::GrepOutput < Fluent::Output
       raise e unless @replace_invalid_sequence
       raise e unless e.message.index("invalid byte sequence in") == 0
       log.info "out_grep: invalid byte sequence is replaced in `#{string}`"
-      string = replace_invalid_byte(string)
+      string = string.scrub('?')
       retry
     end
     return true
   end
-
-  def replace_invalid_byte(string)
-    replace_options = { invalid: :replace, undef: :replace, replace: '?' }
-    original_encoding = string.encoding
-    temporal_encoding = (original_encoding == Encoding::UTF_8 ? Encoding::UTF_16BE : Encoding::UTF_8)
-    string.encode(temporal_encoding, original_encoding, replace_options).encode(original_encoding)
-  end
-
 end
