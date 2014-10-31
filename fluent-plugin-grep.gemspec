@@ -21,11 +21,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "fluentd"
   s.add_runtime_dependency "string-scrub" if RUBY_VERSION.to_f < 2.1
   s.add_development_dependency "rake"
-  s.add_development_dependency "rspec"
-  s.add_development_dependency "rspec-its"
+  s.add_development_dependency "test-unit"
   s.add_development_dependency "pry"
   s.add_development_dependency "pry-nav"
-  s.add_development_dependency "pry-doc"
-  s.add_development_dependency "coveralls"
-  s.add_development_dependency "fuubar"
 end

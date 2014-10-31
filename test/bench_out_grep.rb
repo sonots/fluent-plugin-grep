@@ -1,5 +1,5 @@
-# encoding: UTF-8
-require_relative 'spec_helper'
+require_relative 'helper'
+require 'fluent/plugin/out_grep'
 
 # setup
 Fluent::Test.setup
