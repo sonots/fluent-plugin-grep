@@ -10,8 +10,8 @@ class GrepOutputTest < Test::Unit::TestCase
     @time = Fluent::Engine.now
   end
 
-  def create_driver(conf)
-    Fluent::Test::OutputTestDriver.new(Fluent::GrepOutput, @tag).configure(conf)
+  def create_driver(conf, use_v1_config = true)
+    Fluent::Test::OutputTestDriver.new(Fluent::GrepOutput, @tag).configure(conf, use_v1_config)
   end
 
   def emit(config, msgs = [''])
@@ -65,6 +65,19 @@ class GrepOutputTest < Test::Unit::TestCase
       ]
       assert_raise(Fluent::ConfigError) do
         create_driver(config)
+      end
+    end
+
+    if Fluent::VERSION >= "0.12"
+      test "@label" do
+        Fluent::Engine.root_agent.add_label('@foo')
+        d = create_driver(%[@label @foo])
+        label = Fluent::Engine.root_agent.find_label('@foo')
+        assert_equal(label.event_router, d.instance.router)
+
+        emits = emit(%[@label @foo], ['foo'])
+        tag, time, record = emits.first
+        assert_equal(@tag, tag) # tag is not modified
       end
     end
   end
