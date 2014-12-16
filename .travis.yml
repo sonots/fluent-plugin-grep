@@ -5,4 +5,3 @@ rvm:
 gemfile:
   - Gemfile
   - Gemfile.fluentd.lt.0.12
-  - Gemfile.fluentd.lt.0.10.43
