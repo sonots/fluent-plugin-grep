@@ -1,4 +1,4 @@
-## X.X.X
+## 0.3.4 (2015/05/10)
 
 Fixes:
 
@@ -7,6 +7,7 @@ Fixes:
 Enhancements:
 
 * Some log enhancements
+* Support label feature of Fluentd v0.12
 
 ## 0.3.3 (2014/04/12)
 
