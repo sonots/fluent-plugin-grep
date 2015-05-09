@@ -4,4 +4,4 @@ rvm:
   - 2.1.*
 gemfile:
   - Gemfile
-  - Gemfile.fluentd.lt.0.10.43
+  - Gemfile.fluentd.lt.0.12

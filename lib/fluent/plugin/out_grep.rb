@@ -24,6 +24,11 @@ class Fluent::GrepOutput < Fluent::Output
     define_method("log") { $log }
   end
 
+  # Define `router` method of v0.12 to support v0.10 or earlier
+  unless method_defined?(:router)
+    define_method("router") { Fluent::Engine }
+  end
+
   def initialize
     require 'string/scrub' if RUBY_VERSION.to_f < 2.1
     super
@@ -52,7 +57,7 @@ class Fluent::GrepOutput < Fluent::Output
       @excludes[key] = Regexp.compile(exclude)
     end
 
-    if @tag.nil? and @add_tag_prefix.nil? and @remove_tag_prefix.nil? and @add_tag_suffix.nil? and @remove_tag_suffix.nil?
+    if conf['@label'].nil? and @tag.nil? and @add_tag_prefix.nil? and @remove_tag_prefix.nil? and @add_tag_suffix.nil? and @remove_tag_suffix.nil?
       @add_tag_prefix = 'greped' # not ConfigError to support lower version compatibility
     end
     @tag_proc = tag_proc
@@ -69,7 +74,7 @@ class Fluent::GrepOutput < Fluent::Output
         @excludes.each do |key, exclude|
           throw :break_loop if match(exclude, record[key].to_s)
         end
-        Fluent::Engine.emit(emit_tag, time, record)
+        router.emit(emit_tag, time, record)
       end
     end
 
