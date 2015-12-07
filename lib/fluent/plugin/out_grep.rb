@@ -3,17 +3,28 @@ class Fluent::GrepOutput < Fluent::Output
 
   REGEXP_MAX_NUM = 20
 
-  config_param :input_key, :string, :default => nil # obsolete
-  config_param :regexp, :string, :default => nil # obsolete
-  config_param :exclude, :string, :default => nil # obsolete
-  config_param :tag, :string, :default => nil
-  config_param :add_tag_prefix, :string, :default => nil
-  config_param :remove_tag_prefix, :string, :default => nil
-  config_param :add_tag_suffix, :string, :default => nil
-  config_param :remove_tag_suffix, :string, :default => nil
-  config_param :replace_invalid_sequence, :bool, :default => true
-  (1..REGEXP_MAX_NUM).each {|i| config_param :"regexp#{i}",  :string, :default => nil }
-  (1..REGEXP_MAX_NUM).each {|i| config_param :"exclude#{i}", :string, :default => nil }
+  config_param :input_key, :string, :default => nil, # obsolete
+               :desc => 'The target field key to grep out. Use with regexp or exclude. (obsolete)'
+  config_param :regexp, :string, :default => nil, # obsolete
+               :desc => 'The filtering regular expression. (obsolete)'
+  config_param :exclude, :string, :default => nil, # obsolete
+               :desc => 'The excluding regular expression like grep -v. (obsolete)'
+  config_param :tag, :string, :default => nil,
+               :desc => 'The output tag name.'
+  config_param :add_tag_prefix, :string, :default => nil,
+               :desc => 'Add tag prefix for output message.'
+  config_param :remove_tag_prefix, :string, :default => nil,
+               :desc => 'Remove tag prefix for output message.'
+  config_param :add_tag_suffix, :string, :default => nil,
+               :desc => 'Add tag suffix for output message.'
+  config_param :remove_tag_suffix, :string, :default => nil,
+               :desc => 'Remove tag suffix for output message.'
+  config_param :replace_invalid_sequence, :bool, :default => true,
+               :desc => "Replace invalid byte sequence in UTF-8 with '?' character if true."
+  (1..REGEXP_MAX_NUM).each {|i| config_param :"regexp#{i}",  :string, :default => nil,
+                            :desc => 'The target field key and the filtering regular expression to grep out.' }
+  (1..REGEXP_MAX_NUM).each {|i| config_param :"exclude#{i}", :string, :default => nil,
+                            :desc => 'The target field key and the excluding regular expression like grep -v.' }
 
   # for test
   attr_reader :regexps
