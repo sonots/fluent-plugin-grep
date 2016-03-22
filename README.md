@@ -7,7 +7,7 @@ Fluentd plugin to grep messages.
 
 ## Configuration
 
-### Example 1:
+### Example 1: [Obsolete]
 
     <match foo.bar.**>
       type grep
@@ -54,15 +54,15 @@ then output becomes as belows:
 
 ## Parameters
 
-- input\_key *field\_key*
+- input\_key *field\_key* [Obsolete]
 
     The target field key to grep out. Use with regexp or exclude. 
 
-- regexp *regexp*
+- regexp *regexp* [Obsolete]
 
     The filtering regular expression
 
-- exclude *regexp*
+- exclude *regexp* [Obsolete]
 
     The excluding regular expression like grep -v
 
