@@ -3,7 +3,7 @@
 #*
 *~
 .bundle
-Gemfile.lock
+*.lock
 .rbenv-version
 vendor
 doc/*

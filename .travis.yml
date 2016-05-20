@@ -1,10 +1,10 @@
 rvm:
-  - 1.9.3
-  - 2.0.0
   - 2.1.*
   - 2.2.*
+  - 2.3.0
 gemfile:
   - Gemfile
-  - Gemfile.fluentd.lt.0.12
+  - Gemfile.fluentd.v0.12
+  - Gemfile.fluentd.v0.10
 before_install:
   - gem update bundler
