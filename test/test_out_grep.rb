@@ -1,5 +1,6 @@
 require_relative 'helper'
 require 'fluent/test'
+require 'fluent/test/driver/output'
 require 'fluent/plugin/out_grep'
 
 Fluent::Test.setup
@@ -10,20 +11,20 @@ class GrepOutputTest < Test::Unit::TestCase
     @time = Fluent::Engine.now
   end
 
-  def create_driver(conf, use_v1_config = true)
-    Fluent::Test::OutputTestDriver.new(Fluent::GrepOutput, @tag).configure(conf, use_v1_config)
+  def create_driver(conf, syntax = :v1)
+    Fluent::Test::Driver::Output.new(Fluent::Plugin::GrepOutput).configure(conf, syntax: syntax)
   end
 
   def emit(config, msgs = [''])
     d = create_driver(config)
-    d.run do
+    d.run(default_tag: @tag) do
       msgs.each do |msg|
-        d.emit({'foo' => 'bar', 'message' => msg}, @time)
+        d.feed(@time, {'foo' => 'bar', 'message' => msg})
       end
     end
 
     @instance = d.instance
-    d.emits
+    d.events
   end
 
   sub_test_case 'configure' do
@@ -72,8 +73,8 @@ class GrepOutputTest < Test::Unit::TestCase
       test "@label" do
         Fluent::Engine.root_agent.add_label('@foo')
         d = create_driver(%[@label @foo])
-        label = Fluent::Engine.root_agent.find_label('@foo')
-        assert_equal(label.event_router, d.instance.router)
+        # In v0.14, router is overridden with TestEventRouter in test.
+        assert(Fluent::Engine.root_agent.find_label('@foo'))
 
         emits = emit(%[@label @foo], ['foo'])
         tag, time, record = emits.first
