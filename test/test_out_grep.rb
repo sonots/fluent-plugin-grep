@@ -72,12 +72,12 @@ class GrepOutputTest < Test::Unit::TestCase
     if Fluent::VERSION >= "0.12"
       test "@label" do
         Fluent::Engine.root_agent.add_label('@foo')
-        d = create_driver(%[@label @foo])
+        create_driver(%[@label @foo])
         # In v0.14, router is overridden with TestEventRouter in test.
         assert(Fluent::Engine.root_agent.find_label('@foo'))
 
         emits = emit(%[@label @foo], ['foo'])
-        tag, time, record = emits.first
+        tag, = emits.first
         assert_equal(@tag, tag) # tag is not modified
       end
     end
@@ -96,7 +96,7 @@ class GrepOutputTest < Test::Unit::TestCase
     test 'empty config' do
       emits = emit('', messages)
       assert_equal(4, emits.size)
-      tag, time, record = emits.first
+      tag, _time, record = emits.first
       assert_equal("greped.#{@tag}", tag)
       assert_not_nil(record, 'foo')
       assert_not_nil(record, 'message')
@@ -144,55 +144,55 @@ class GrepOutputTest < Test::Unit::TestCase
 
     test 'tag' do
       emits = emit('tag foo')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal('foo', tag)
     end
 
     test 'add_tag_prefix' do
       emits = emit('add_tag_prefix foo')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("foo.#{@tag}", tag)
     end
 
     test 'remove_tag_prefix' do
       emits = emit('remove_tag_prefix syslog')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("host1", tag)
     end
 
     test 'add_tag_suffix' do
       emits = emit('add_tag_suffix foo')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("#{@tag}.foo", tag)
     end
 
     test 'remove_tag_suffix' do
       emits = emit('remove_tag_suffix host1')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("syslog", tag)
     end
 
     test 'add_tag_prefix.' do
       emits = emit('add_tag_prefix foo.')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("foo.#{@tag}", tag)
     end
 
     test 'remove_tag_prefix.' do
       emits = emit('remove_tag_prefix syslog.')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("host1", tag)
     end
 
     test '.add_tag_suffix' do
       emits = emit('add_tag_suffix .foo')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("#{@tag}.foo", tag)
     end
 
     test '.remove_tag_suffix' do
       emits = emit('remove_tag_suffix .host1')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("syslog", tag)
     end
 
@@ -205,7 +205,7 @@ class GrepOutputTest < Test::Unit::TestCase
         remove_tag_suffix host1
       ]
       emits = emit(config)
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("foo.foo.foo", tag)
     end
 
