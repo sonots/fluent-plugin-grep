@@ -234,28 +234,26 @@ class GrepOutputTest < Test::Unit::TestCase
   end
 
   sub_test_case 'test log' do
-    def capture_log(log)
+    def mock_logdev(log)
       tmp = log.out
       log.out = StringIO.new
+      log.logdev = Fluent::Test::DummyLogDevice.new
       yield log
-      return log.out.string
     ensure
       log.out = tmp
     end
 
-    if Fluent::VERSION >= "0.10.43"
-      test "log_level info" do
-        d = create_driver('log_level info')
-        log = d.instance.log
-        assert_equal("", capture_log(log) {|log| log.debug "foobar" })
-        assert_include(capture_log(log) {|log| log.info "foobar" }, "foobar")
-      end
+    test "log_level info" do
+      d = create_driver('log_level info')
+      logger = d.instance.log
+      assert_equal(nil, mock_logdev(logger) {|log| log.debug "foobar" })
+      assert_include(mock_logdev(logger) {|log| log.warn "foobar" }, "foobar")
     end
 
     test "should work" do
       d = create_driver('')
-      log = d.instance.log
-      assert_include(capture_log(log) {|log| log.info "foobar" }, "foobar")
+      logger = d.instance.log
+      assert_include(mock_logdev(logger){|log| log.info "foobar"}, "foobar")
     end
   end
 end
