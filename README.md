@@ -5,6 +5,8 @@
 
 Fluentd plugin to grep messages.
 
+NOTE: This plugin is deprecated. Use built-in [grep filter](http://docs.fluentd.org/articles/filter_grep) instead.
+
 ## Configuration
 
 ### Example 1: [Obsolete]
