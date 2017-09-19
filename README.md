@@ -1,11 +1,11 @@
+**NOTE: [grep filter](http://docs.fluentd.org/articles/filter_grep) is now a built-in plugin. Use it instead of installing this plugin**
+
 # fluent-plugin-grep
 
 [![Build Status](https://secure.travis-ci.org/sonots/fluent-plugin-grep.png?branch=master)](http://travis-ci.org/sonots/fluent-plugin-grep)
 [![Coverage Status](https://coveralls.io/repos/sonots/fluent-plugin-grep/badge.png?branch=master)](https://coveralls.io/r/sonots/fluent-plugin-grep?branch=master)
 
 Fluentd plugin to grep messages.
-
-NOTE: This plugin is deprecated. Use built-in [grep filter](http://docs.fluentd.org/articles/filter_grep) instead.
 
 ## Configuration
 
