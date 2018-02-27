@@ -1,5 +1,9 @@
-class Fluent::GrepOutput < Fluent::Output
+require 'fluent/plugin/output'
+
+class Fluent::Plugin::GrepOutput < Fluent::Plugin::Output
   Fluent::Plugin.register_output('grep', self)
+
+  helpers :event_emitter
 
   REGEXP_MAX_NUM = 20
 
@@ -63,7 +67,7 @@ class Fluent::GrepOutput < Fluent::Output
     @tag_proc = tag_proc
   end
 
-  def emit(tag, es, chain)
+  def process(tag, es)
     emit_tag = @tag_proc.call(tag)
 
     es.each do |time,record|
@@ -77,8 +81,6 @@ class Fluent::GrepOutput < Fluent::Output
         router.emit(emit_tag, time, record)
       end
     end
-
-    chain.next
   rescue => e
     log.warn "out_grep: #{e.class} #{e.message} #{e.backtrace.first}"
   end

@@ -1,5 +1,6 @@
 require_relative 'helper'
 require 'fluent/test'
+require 'fluent/test/driver/output'
 require 'fluent/plugin/out_grep'
 
 Fluent::Test.setup
@@ -10,20 +11,20 @@ class GrepOutputTest < Test::Unit::TestCase
     @time = Fluent::Engine.now
   end
 
-  def create_driver(conf, use_v1_config = true)
-    Fluent::Test::OutputTestDriver.new(Fluent::GrepOutput, @tag).configure(conf, use_v1_config)
+  def create_driver(conf, syntax = :v1)
+    Fluent::Test::Driver::Output.new(Fluent::Plugin::GrepOutput).configure(conf, syntax: syntax)
   end
 
   def emit(config, msgs = [''])
     d = create_driver(config)
-    d.run do
+    d.run(default_tag: @tag) do
       msgs.each do |msg|
-        d.emit({'foo' => 'bar', 'message' => msg}, @time)
+        d.feed(@time, {'foo' => 'bar', 'message' => msg})
       end
     end
 
     @instance = d.instance
-    d.emits
+    d.events
   end
 
   sub_test_case 'configure' do
@@ -71,12 +72,12 @@ class GrepOutputTest < Test::Unit::TestCase
     if Fluent::VERSION >= "0.12"
       test "@label" do
         Fluent::Engine.root_agent.add_label('@foo')
-        d = create_driver(%[@label @foo])
-        label = Fluent::Engine.root_agent.find_label('@foo')
-        assert_equal(label.event_router, d.instance.router)
+        create_driver(%[@label @foo])
+        # In v0.14, router is overridden with TestEventRouter in test.
+        assert(Fluent::Engine.root_agent.find_label('@foo'))
 
         emits = emit(%[@label @foo], ['foo'])
-        tag, time, record = emits.first
+        tag, = emits.first
         assert_equal(@tag, tag) # tag is not modified
       end
     end
@@ -95,7 +96,7 @@ class GrepOutputTest < Test::Unit::TestCase
     test 'empty config' do
       emits = emit('', messages)
       assert_equal(4, emits.size)
-      tag, time, record = emits.first
+      tag, _time, record = emits.first
       assert_equal("greped.#{@tag}", tag)
       assert_not_nil(record, 'foo')
       assert_not_nil(record, 'message')
@@ -143,55 +144,55 @@ class GrepOutputTest < Test::Unit::TestCase
 
     test 'tag' do
       emits = emit('tag foo')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal('foo', tag)
     end
 
     test 'add_tag_prefix' do
       emits = emit('add_tag_prefix foo')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("foo.#{@tag}", tag)
     end
 
     test 'remove_tag_prefix' do
       emits = emit('remove_tag_prefix syslog')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("host1", tag)
     end
 
     test 'add_tag_suffix' do
       emits = emit('add_tag_suffix foo')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("#{@tag}.foo", tag)
     end
 
     test 'remove_tag_suffix' do
       emits = emit('remove_tag_suffix host1')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("syslog", tag)
     end
 
     test 'add_tag_prefix.' do
       emits = emit('add_tag_prefix foo.')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("foo.#{@tag}", tag)
     end
 
     test 'remove_tag_prefix.' do
       emits = emit('remove_tag_prefix syslog.')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("host1", tag)
     end
 
     test '.add_tag_suffix' do
       emits = emit('add_tag_suffix .foo')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("#{@tag}.foo", tag)
     end
 
     test '.remove_tag_suffix' do
       emits = emit('remove_tag_suffix .host1')
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("syslog", tag)
     end
 
@@ -204,7 +205,7 @@ class GrepOutputTest < Test::Unit::TestCase
         remove_tag_suffix host1
       ]
       emits = emit(config)
-      tag, time, record = emits.first
+      tag, = emits.first
       assert_equal("foo.foo.foo", tag)
     end
 
@@ -233,28 +234,26 @@ class GrepOutputTest < Test::Unit::TestCase
   end
 
   sub_test_case 'test log' do
-    def capture_log(log)
+    def mock_logdev(log)
       tmp = log.out
       log.out = StringIO.new
+      log.logdev = Fluent::Test::DummyLogDevice.new
       yield log
-      return log.out.string
     ensure
       log.out = tmp
     end
 
-    if Fluent::VERSION >= "0.10.43"
-      test "log_level info" do
-        d = create_driver('log_level info')
-        log = d.instance.log
-        assert_equal("", capture_log(log) {|log| log.debug "foobar" })
-        assert_include(capture_log(log) {|log| log.info "foobar" }, "foobar")
-      end
+    test "log_level info" do
+      d = create_driver('log_level info')
+      logger = d.instance.log
+      assert_equal(nil, mock_logdev(logger) {|log| log.debug "foobar" })
+      assert_include(mock_logdev(logger) {|log| log.warn "foobar" }, "foobar")
     end
 
     test "should work" do
       d = create_driver('')
-      log = d.instance.log
-      assert_include(capture_log(log) {|log| log.info "foobar" }, "foobar")
+      logger = d.instance.log
+      assert_include(mock_logdev(logger){|log| log.info "foobar"}, "foobar")
     end
   end
 end
